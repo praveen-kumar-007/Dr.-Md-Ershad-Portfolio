@@ -4,6 +4,7 @@ import SectionHeading from '../components/SectionHeading'
 import StatBadge from '../components/StatBadge'
 import TimelineItem from '../components/TimelineItem'
 import DownloadButton from '../components/DownloadButton'
+import { SkeletonBlock, SkeletonCard } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import '../styles/home.css'
 import { getContact, getDegrees, getExperiences, getPublications, getGalleryItems, getAchievements } from '../services/api'
@@ -48,8 +49,8 @@ function Home() {
     },
   ]
 
-  const [publicationCount, setPublicationCount] = useState(0)
-  const [galleryCount, setGalleryCount] = useState(0)
+  const [publicationCount, setPublicationCount] = useState(null)
+  const [galleryCount, setGalleryCount] = useState(null)
   const [galleryItems, setGalleryItems] = useState([])
   const [degrees, setDegrees] = useState([])
   const [experienceItems, setExperienceItems] = useState([])
@@ -57,55 +58,56 @@ function Home() {
   const [latestPublications, setLatestPublications] = useState([])
   const [latestArticles, setLatestArticles] = useState([])
   const [latestPatents, setLatestPatents] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const load = async () => {
       try {
-        const contactData = await getContact()
-        setContact(contactData)
-      } catch (error) {
-        console.warn('Contact API unavailable', error)
-      }
+        const [contactResult, publicationsResult, galleryResult, degreesResult, experiencesResult, achievementsResult] =
+          await Promise.allSettled([
+            getContact(),
+            getPublications(),
+            getGalleryItems(),
+            getDegrees(),
+            getExperiences(),
+            getAchievements(),
+          ])
 
-      try {
-        const publications = await getPublications()
-        setPublicationCount(publications.length)
-        setLatestPublications(
-          publications.filter((item) => (item.publicationType || 'Publication') === 'Publication').slice(0, 2),
-        )
-        setLatestArticles(publications.filter((item) => item.publicationType === 'Article').slice(0, 2))
-        setLatestPatents(publications.filter((item) => item.publicationType === 'Patent').slice(0, 2))
-      } catch (error) {
-        console.warn('Publications API unavailable', error)
-      }
+        if (contactResult.status === 'fulfilled') {
+          setContact(contactResult.value)
+        }
 
-      try {
-        const gallery = await getGalleryItems()
-        setGalleryCount(gallery.length)
-        setGalleryItems(gallery.slice(0, 6))
-      } catch (error) {
-        console.warn('Gallery API unavailable', error)
-      }
+        if (publicationsResult.status === 'fulfilled') {
+          const publications = publicationsResult.value
+          setPublicationCount(publications.length)
+          setLatestPublications(
+            publications.filter((item) => (item.publicationType || 'Publication') === 'Publication').slice(0, 2),
+          )
+          setLatestArticles(publications.filter((item) => item.publicationType === 'Article').slice(0, 2))
+          setLatestPatents(publications.filter((item) => item.publicationType === 'Patent').slice(0, 2))
+        }
 
-      try {
-        const degreesData = await getDegrees()
-        setDegrees(degreesData)
-      } catch (error) {
-        console.warn('Degrees API unavailable', error)
-      }
+        if (galleryResult.status === 'fulfilled') {
+          const gallery = galleryResult.value
+          setGalleryCount(gallery.length)
+          setGalleryItems(gallery.slice(0, 6))
+        }
 
-      try {
-        const experiencesData = await getExperiences()
-        setExperienceItems(experiencesData)
-      } catch (error) {
-        console.warn('Experiences API unavailable', error)
-      }
+        if (degreesResult.status === 'fulfilled') {
+          setDegrees(degreesResult.value)
+        }
 
-      try {
-        const latestAchievements = await getAchievements()
-        setAchievements(latestAchievements.slice(0, 5))
+        if (experiencesResult.status === 'fulfilled') {
+          setExperienceItems(experiencesResult.value)
+        }
+
+        if (achievementsResult.status === 'fulfilled') {
+          setAchievements(achievementsResult.value.slice(0, 5))
+        }
       } catch (error) {
-        console.warn('Achievements API unavailable', error)
+        console.warn('Home page data load failed', error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -189,11 +191,11 @@ function Home() {
 
               <div className="hero-metrics">
                 <div className="metric-card">
-                  <strong>{publicationCount}</strong>
+                  <strong>{loading ? <span className="skeleton-line short" /> : publicationCount ?? 0}</strong>
                   <span>Publications</span>
                 </div>
                 <div className="metric-card">
-                  <strong>{galleryCount}</strong>
+                  <strong>{loading ? <span className="skeleton-line short" /> : galleryCount ?? 0}</strong>
                   <span>Gallery items</span>
                 </div>
                 <div className="metric-card">
@@ -239,7 +241,11 @@ function Home() {
         </div>
 
         <div className="home-gallery-grid">
-          {galleryItems.length ? (
+          {loading ? (
+            Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonCard key={index} className="home-gallery-card" />
+            ))
+          ) : galleryItems.length ? (
             galleryItems.map((item) => (
               <article key={item._id} className="home-gallery-card">
                 <PlaceholderMedia
@@ -294,7 +300,13 @@ function Home() {
         <div className="panel">
           <SectionHeading title="Experience" eyebrow="Career journey" />
           <div className="timeline-list">
-            {experienceItems.length > 0 ? (
+            {loading ? (
+              Array.from({ length: 2 }).map((_, index) => (
+                <div key={index} className="skeleton-card">
+                  <SkeletonBlock rows={3} />
+                </div>
+              ))
+            ) : experienceItems.length > 0 ? (
               experienceItems.slice(0, 2).map((item) => (
                 <TimelineItem
                   key={item._id}
@@ -313,7 +325,13 @@ function Home() {
         <div className="panel">
           <SectionHeading title="Education" eyebrow="Qualifications" />
           <div className="timeline-list">
-            {degrees.length > 0 ? (
+            {loading ? (
+              Array.from({ length: 2 }).map((_, index) => (
+                <div key={index} className="skeleton-card">
+                  <SkeletonBlock rows={3} />
+                </div>
+              ))
+            ) : degrees.length > 0 ? (
               degrees.map((item) => (
                 <TimelineItem
                   key={item._id}
@@ -333,7 +351,15 @@ function Home() {
       <section className="section split-grid">
         <article className="panel">
           <SectionHeading title="Achievements" eyebrow="Awards & recognition" />
-          {achievements.length > 0 ? (
+          {loading ? (
+            <div className="bullet-list">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <div key={index} className="skeleton-card">
+                  <SkeletonBlock rows={2} />
+                </div>
+              ))}
+            </div>
+          ) : achievements.length > 0 ? (
             <ul className="bullet-list">
               {achievements.slice(0, 2).map((achievement) => (
                 <li key={achievement._id}>
@@ -355,54 +381,62 @@ function Home() {
         <article className="panel">
           <SectionHeading title="Research output" eyebrow="Publications & patents" />
           <div className="publication-summary">
-            <div>
-              <h4>Publications</h4>
-              {latestPublications.length > 0 ? (
-                <ul className="bullet-list">
-                  {latestPublications.map((item) => (
-                    <li key={item._id}>
-                      <strong>{item.title}</strong>
-                      {item.publisher ? ` — ${item.publisher}` : ''}
-                      {item.year ? ` (${item.year})` : ''}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No recent publications available.</p>
-              )}
-            </div>
-            <div>
-              <h4>Articles</h4>
-              {latestArticles.length > 0 ? (
-                <ul className="bullet-list">
-                  {latestArticles.map((item) => (
-                    <li key={item._id}>
-                      <strong>{item.title}</strong>
-                      {item.publisher ? ` — ${item.publisher}` : ''}
-                      {item.year ? ` (${item.year})` : ''}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No recent articles available.</p>
-              )}
-            </div>
-            <div>
-              <h4>Patents</h4>
-              {latestPatents.length > 0 ? (
-                <ul className="bullet-list">
-                  {latestPatents.map((item) => (
-                    <li key={item._id}>
-                      <strong>{item.title}</strong>
-                      {item.publisher ? ` — ${item.publisher}` : ''}
-                      {item.year ? ` (${item.year})` : ''}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No recent patents available.</p>
-              )}
-            </div>
+            {loading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonCard key={index} className="skeleton-publication-summary" lines={3} />
+              ))
+            ) : (
+              <>
+                <div>
+                  <h4>Publications</h4>
+                  {latestPublications.length > 0 ? (
+                    <ul className="bullet-list">
+                      {latestPublications.map((item) => (
+                        <li key={item._id}>
+                          <strong>{item.title}</strong>
+                          {item.publisher ? ` — ${item.publisher}` : ''}
+                          {item.year ? ` (${item.year})` : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No recent publications available.</p>
+                  )}
+                </div>
+                <div>
+                  <h4>Articles</h4>
+                  {latestArticles.length > 0 ? (
+                    <ul className="bullet-list">
+                      {latestArticles.map((item) => (
+                        <li key={item._id}>
+                          <strong>{item.title}</strong>
+                          {item.publisher ? ` — ${item.publisher}` : ''}
+                          {item.year ? ` (${item.year})` : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No recent articles available.</p>
+                  )}
+                </div>
+                <div>
+                  <h4>Patents</h4>
+                  {latestPatents.length > 0 ? (
+                    <ul className="bullet-list">
+                      {latestPatents.map((item) => (
+                        <li key={item._id}>
+                          <strong>{item.title}</strong>
+                          {item.publisher ? ` — ${item.publisher}` : ''}
+                          {item.year ? ` (${item.year})` : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No recent patents available.</p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
           <Link to="/publications" className="button-primary">
             View all publications
@@ -428,35 +462,45 @@ function Home() {
             </Link>
           </div>
 
-          <div className="contact-home-cards">
-            <article className="contact-card contact-card-large">
-              <div className="contact-card-title">
-                <span className="contact-card-icon contact-card-icon-email" aria-hidden="true" />
-                Email
-              </div>
-              <a href={`mailto:${contact.email}`} className="contact-card-link">
-                {contact.email}
-              </a>
-            </article>
-            <article className="contact-card contact-card-large">
-              <div className="contact-card-title">
-                <span className="contact-card-icon contact-card-icon-phone" aria-hidden="true" />
-                Phone
-              </div>
-              <a href={`tel:${contact.phone}`} className="contact-card-link">
-                {contact.phone}
-              </a>
-            </article>
-            <article className="contact-card contact-card-large">
-              <div className="contact-card-title">
-                <span className="contact-card-icon contact-card-icon-scholar" aria-hidden="true" />
-                Scholar Profile
-              </div>
-              <a href={contact.scholarUrl || '#'} target="_blank" rel="noreferrer" className="contact-card-link">
-                View scholar profile
-              </a>
-            </article>
-          </div>
+          {loading ? (
+            <div className="contact-home-cards skeleton-contact-grid">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <article key={index} className="contact-card contact-card-large skeleton-card">
+                  <SkeletonBlock rows={2} />
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="contact-home-cards">
+              <article className="contact-card contact-card-large">
+                <div className="contact-card-title">
+                  <span className="contact-card-icon contact-card-icon-email" aria-hidden="true" />
+                  Email
+                </div>
+                <a href={`mailto:${contact.email}`} className="contact-card-link">
+                  {contact.email}
+                </a>
+              </article>
+              <article className="contact-card contact-card-large">
+                <div className="contact-card-title">
+                  <span className="contact-card-icon contact-card-icon-phone" aria-hidden="true" />
+                  Phone
+                </div>
+                <a href={`tel:${contact.phone}`} className="contact-card-link">
+                  {contact.phone}
+                </a>
+              </article>
+              <article className="contact-card contact-card-large">
+                <div className="contact-card-title">
+                  <span className="contact-card-icon contact-card-icon-scholar" aria-hidden="true" />
+                  Scholar Profile
+                </div>
+                <a href={contact.scholarUrl || '#'} target="_blank" rel="noreferrer" className="contact-card-link">
+                  View scholar profile
+                </a>
+              </article>
+            </div>
+          )}
         </div>
       </section>
     </main>

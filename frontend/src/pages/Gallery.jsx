@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import SectionHeading from '../components/SectionHeading'
 import PlaceholderMedia from '../components/PlaceholderMedia'
+import { SkeletonCard } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import { getGalleryItems } from '../services/api'
 
@@ -31,7 +32,9 @@ function Gallery() {
       </p>
       <div className="feature-grid gallery-grid">
         {loading ? (
-          <p>Loading gallery items...</p>
+          Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonCard key={index} className="gallery-card" />
+          ))
         ) : (
           items.map((item) => (
             <article key={item._id} className="feature-card gallery-card">

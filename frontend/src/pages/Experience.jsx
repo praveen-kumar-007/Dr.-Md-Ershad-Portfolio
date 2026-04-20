@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import SectionHeading from '../components/SectionHeading'
 import TimelineItem from '../components/TimelineItem'
 import PlaceholderMedia from '../components/PlaceholderMedia'
+import { SkeletonBlock } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import { getDegrees, getExperiences } from '../services/api'
 
@@ -28,17 +29,20 @@ function Experience() {
   useEffect(() => {
     const loadExperience = async () => {
       try {
-        const items = await getExperiences()
-        setExperienceItems(items)
-      } catch (error) {
-        console.error('Failed to load experience entries', error)
-      }
+        const [experienceResult, degreesResult] = await Promise.allSettled([
+          getExperiences(),
+          getDegrees(),
+        ])
 
-      try {
-        const degreesData = await getDegrees()
-        setDegrees(degreesData)
+        if (experienceResult.status === 'fulfilled') {
+          setExperienceItems(experienceResult.value)
+        }
+
+        if (degreesResult.status === 'fulfilled') {
+          setDegrees(degreesResult.value)
+        }
       } catch (error) {
-        console.error('Failed to load academic qualifications', error)
+        console.error('Failed to load experience data', error)
       } finally {
         setLoading(false)
       }
@@ -55,7 +59,13 @@ function Experience() {
         <div className="panel">
           <SectionHeading title="Professional Experience" />
           {loading ? (
-            <p>Loading experience entries...</p>
+            <div className="experience-grid">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="skeleton-card" style={{ minHeight: '260px' }}>
+                  <SkeletonBlock rows={4} />
+                </div>
+              ))}
+            </div>
           ) : experienceItems.length === 0 ? (
             <p>No experience entries found yet.</p>
           ) : (
@@ -85,7 +95,13 @@ function Experience() {
         <div className="panel">
           <SectionHeading title="Academic Qualifications" />
           <div className="timeline-list">
-            {degrees.length > 0 ? (
+            {loading ? (
+              Array.from({ length: 2 }).map((_, index) => (
+                <div key={index} className="skeleton-card">
+                  <SkeletonBlock rows={3} />
+                </div>
+              ))
+            ) : degrees.length > 0 ? (
               degrees.map((item) => (
                 <TimelineItem
                   key={item._id}

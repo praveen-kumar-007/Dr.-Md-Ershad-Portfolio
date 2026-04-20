@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import SectionHeading from '../components/SectionHeading'
 import PlaceholderMedia from '../components/PlaceholderMedia'
+import { SkeletonBlock } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import { getAchievements } from '../services/api'
 
@@ -31,7 +32,13 @@ function Achievements() {
       </section>
       {loading ? (
         <section className="panel">
-          <p>Loading achievements...</p>
+          <div className="bullet-list">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="skeleton-card">
+                <SkeletonBlock rows={2} />
+              </div>
+            ))}
+          </div>
         </section>
       ) : (
         <section className="panel">

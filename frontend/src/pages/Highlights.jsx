@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import SectionHeading from '../components/SectionHeading'
+import { SkeletonCard } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import { getHighlights } from '../services/api'
 
@@ -30,7 +31,11 @@ function Highlights() {
       </section>
       {loading ? (
         <section className="panel">
-          <p>Loading highlights...</p>
+          <div className="feature-grid">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <SkeletonCard key={index} lines={3} />
+            ))}
+          </div>
         </section>
       ) : (
         <div className="feature-grid">

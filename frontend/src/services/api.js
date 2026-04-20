@@ -8,7 +8,17 @@ const API_BASE =
   normalizeApiBase(import.meta.env.VITE_API_URL) ||
   (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
 
+const cache = new Map();
+
 async function request(path, options = {}) {
+  const cacheKey = `${API_BASE}${path}`;
+  const method = (options.method || "GET").toUpperCase();
+  const isGet = method === "GET";
+
+  if (isGet && cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,
@@ -27,7 +37,15 @@ async function request(path, options = {}) {
     );
   }
 
-  return response.json();
+  const data = await response.json();
+
+  if (isGet) {
+    cache.set(cacheKey, data);
+  } else {
+    cache.clear();
+  }
+
+  return data;
 }
 
 export function getPublications(category) {

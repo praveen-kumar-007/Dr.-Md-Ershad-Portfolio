@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import SectionHeading from '../components/SectionHeading'
 import PlaceholderMedia from '../components/PlaceholderMedia'
+import { SkeletonCard } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import { getPublications } from '../services/api'
 
@@ -48,8 +49,12 @@ function Publications() {
       </section>
 
       {loading ? (
-        <section className="panel">
-          <p>Loading publications...</p>
+        <section className="panel publication-group">
+          <div className="publication-grid">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <SkeletonCard key={index} lines={4} />
+            ))}
+          </div>
         </section>
       ) : (
         categories.map((category) => (

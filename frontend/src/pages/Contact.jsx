@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import SectionHeading from '../components/SectionHeading'
+import { SkeletonBlock } from '../components/SkeletonBlock'
 import '../styles/components.css'
 import { getContact } from '../services/api'
 
@@ -82,7 +83,13 @@ function Contact() {
           </div>
 
           {loading ? (
-            <p>Loading contact details...</p>
+            <div className="contact-card-grid skeleton-contact-grid">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <article key={index} className="contact-card skeleton-card">
+                  <SkeletonBlock rows={2} />
+                </article>
+              ))}
+            </div>
           ) : (
             <div className="contact-card-grid">
               <div className="contact-card">

@@ -23,6 +23,12 @@ app.use(morgan("dev"));
 
 app.use("/api", routes);
 
+app.get("/", (req, res) => {
+  res.json({ message: "Dr. Md Ershad backend is running" });
+});
+
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 app.use(notFound);
 app.use(errorHandler);
 

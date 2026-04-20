@@ -1,20 +1,29 @@
-import express from 'express'
-import cors from 'cors'
-import morgan from 'morgan'
-import routes from './routes/index.js'
-import { notFound } from './middleware/notFound.js'
-import { errorHandler } from './middleware/errorHandler.js'
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import routes from "./routes/index.js";
+import { notFound } from "./middleware/notFound.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
-const app = express()
+const app = express();
 
-app.use(cors())
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true }))
-app.use(morgan('dev'))
+const allowedOrigin =
+  process.env.FRONTEND_URL ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:5173"
+    : undefined);
+const corsOptions = allowedOrigin
+  ? { origin: allowedOrigin, credentials: true }
+  : {};
 
-app.use('/api', routes)
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 
-app.use(notFound)
-app.use(errorHandler)
+app.use("/api", routes);
 
-export default app
+app.use(notFound);
+app.use(errorHandler);
+
+export default app;

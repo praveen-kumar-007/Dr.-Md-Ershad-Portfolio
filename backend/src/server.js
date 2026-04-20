@@ -1,21 +1,22 @@
-import dotenv from 'dotenv'
-import app from './app.js'
-import connectDatabase from './config/db.js'
+import dotenv from "dotenv";
+import app from "./app.js";
+import connectDatabase from "./config/db.js";
 
-dotenv.config()
+dotenv.config();
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
+const MONGODB_URI = process.env.MONGODB_URI || process.env.DATABASE_URL;
 
 async function startServer() {
   try {
-    await connectDatabase(process.env.MONGODB_URI)
+    await connectDatabase(MONGODB_URI);
     app.listen(PORT, () => {
-      console.log(`Backend running on http://localhost:${PORT}`)
-    })
+      console.log(`Backend running on port ${PORT}`);
+    });
   } catch (error) {
-    console.error('Server startup failed:', error)
-    process.exit(1)
+    console.error("Server startup failed:", error);
+    process.exit(1);
   }
 }
 
-startServer()
+startServer();

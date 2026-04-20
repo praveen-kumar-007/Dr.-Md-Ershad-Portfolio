@@ -16,3 +16,17 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+      - key: FRONTEND_URL
+        sync: false
+
+  - type: static_site
+    name: dr-md-ershad-frontend
+    env: static
+    region: oregon
+    branch: main
+    plan: starter
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false

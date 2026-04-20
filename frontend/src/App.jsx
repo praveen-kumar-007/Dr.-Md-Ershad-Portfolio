@@ -256,7 +256,7 @@ function App() {
               )}
             </div>
             <div className="mobile-nav-footer-copy">
-              <span>Mobile menu by Dr. Md Ershad</span>
+              <span>Dr. Md Ershad — Academic Leader & Research Scholar</span>
             </div>
           </div>
         </div>

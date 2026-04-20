@@ -1,16 +1,16 @@
-import React from 'react'
+import React from "react";
 
-export function SkeletonBlock({ rows = 3, className = '' }) {
+export function SkeletonBlock({ rows = 3, className = "" }) {
   return (
     <div className={`skeleton-block ${className}`.trim()}>
       {Array.from({ length: rows }).map((_, index) => (
         <div key={index} className="skeleton-line" />
       ))}
     </div>
-  )
+  );
 }
 
-export function SkeletonCard({ lines = 4, hasMedia = true, className = '' }) {
+export function SkeletonCard({ lines = 4, hasMedia = true, className = "" }) {
   return (
     <article className={`skeleton-card ${className}`.trim()}>
       {hasMedia && <div className="skeleton-card-media" />}
@@ -18,7 +18,7 @@ export function SkeletonCard({ lines = 4, hasMedia = true, className = '' }) {
         <SkeletonBlock rows={lines} />
       </div>
     </article>
-  )
+  );
 }
 
-export default SkeletonBlock
+export default SkeletonBlock;

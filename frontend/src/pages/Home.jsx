@@ -1,118 +1,144 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import SectionHeading from '../components/SectionHeading'
-import StatBadge from '../components/StatBadge'
-import TimelineItem from '../components/TimelineItem'
-import DownloadButton from '../components/DownloadButton'
-import { SkeletonBlock, SkeletonCard } from '../components/SkeletonBlock'
-import '../styles/components.css'
-import '../styles/home.css'
-import { getContact, getDegrees, getExperiences, getPublications, getGalleryItems, getAchievements } from '../services/api'
-import PlaceholderMedia from '../components/PlaceholderMedia'
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import SectionHeading from "../components/SectionHeading";
+import StatBadge from "../components/StatBadge";
+import TimelineItem from "../components/TimelineItem";
+import DownloadButton from "../components/DownloadButton";
+import { SkeletonBlock, SkeletonCard } from "../components/SkeletonBlock";
+import "../styles/components.css";
+import "../styles/home.css";
+import {
+  getContact,
+  getDegrees,
+  getExperiences,
+  getPublications,
+  getGalleryItems,
+  getAchievements,
+} from "../services/api";
+import PlaceholderMedia from "../components/PlaceholderMedia";
 
 function Home() {
   const [contact, setContact] = useState({
-    phone: '',
-    email: '',
-    scholarUrl: '',
-    profileImageUrl: '',
-    googleScholar: '',
-    googleScholarDetail: '',
-    scopus: '',
-    scopusDetail: '',
-    academicExperience: '',
-    academicExperienceDetail: '',
-    researchFocus: '',
-    researchFocusDetail: '',
-  })
+    phone: "",
+    email: "",
+    scholarUrl: "",
+    profileImageUrl: "",
+    googleScholar: "",
+    googleScholarDetail: "",
+    scopus: "",
+    scopusDetail: "",
+    academicExperience: "",
+    academicExperienceDetail: "",
+    researchFocus: "",
+    researchFocusDetail: "",
+  });
 
   const stats = [
     {
-      label: 'Google Scholar',
-      value: contact.googleScholar || 'No data',
-      detail: contact.googleScholarDetail || 'Add this in admin',
+      label: "Google Scholar",
+      value: contact.googleScholar || "No data",
+      detail: contact.googleScholarDetail || "Add this in admin",
     },
     {
-      label: 'Scopus',
-      value: contact.scopus || 'No data',
-      detail: contact.scopusDetail || 'Add this in admin',
+      label: "Scopus",
+      value: contact.scopus || "No data",
+      detail: contact.scopusDetail || "Add this in admin",
     },
     {
-      label: 'Academic Experience',
-      value: contact.academicExperience || 'No data',
-      detail: contact.academicExperienceDetail || 'Add this in admin',
+      label: "Academic Experience",
+      value: contact.academicExperience || "No data",
+      detail: contact.academicExperienceDetail || "Add this in admin",
     },
     {
-      label: 'Research Focus',
-      value: contact.researchFocus || 'No data',
-      detail: contact.researchFocusDetail || 'Add this in admin',
+      label: "Research Focus",
+      value: contact.researchFocus || "No data",
+      detail: contact.researchFocusDetail || "Add this in admin",
     },
-  ]
+  ];
 
-  const [publicationCount, setPublicationCount] = useState(null)
-  const [galleryCount, setGalleryCount] = useState(null)
-  const [galleryItems, setGalleryItems] = useState([])
-  const [degrees, setDegrees] = useState([])
-  const [experienceItems, setExperienceItems] = useState([])
-  const [achievements, setAchievements] = useState([])
-  const [latestPublications, setLatestPublications] = useState([])
-  const [latestArticles, setLatestArticles] = useState([])
-  const [latestPatents, setLatestPatents] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [publicationCount, setPublicationCount] = useState(null);
+  const [galleryCount, setGalleryCount] = useState(null);
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [degrees, setDegrees] = useState([]);
+  const [experienceItems, setExperienceItems] = useState([]);
+  const [achievements, setAchievements] = useState([]);
+  const [latestPublications, setLatestPublications] = useState([]);
+  const [latestArticles, setLatestArticles] = useState([]);
+  const [latestPatents, setLatestPatents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [contactResult, publicationsResult, galleryResult, degreesResult, experiencesResult, achievementsResult] =
-          await Promise.allSettled([
-            getContact(),
-            getPublications(),
-            getGalleryItems(),
-            getDegrees(),
-            getExperiences(),
-            getAchievements(),
-          ])
+        const [
+          contactResult,
+          publicationsResult,
+          galleryResult,
+          degreesResult,
+          experiencesResult,
+          achievementsResult,
+        ] = await Promise.allSettled([
+          getContact(),
+          getPublications(),
+          getGalleryItems(),
+          getDegrees(),
+          getExperiences(),
+          getAchievements(),
+        ]);
 
-        if (contactResult.status === 'fulfilled') {
-          setContact(contactResult.value)
+        if (contactResult.status === "fulfilled") {
+          setContact(contactResult.value);
         }
 
-        if (publicationsResult.status === 'fulfilled') {
-          const publications = publicationsResult.value
-          setPublicationCount(publications.length)
+        if (publicationsResult.status === "fulfilled") {
+          const publications = publicationsResult.value;
+          setPublicationCount(publications.length);
           setLatestPublications(
-            publications.filter((item) => (item.publicationType || 'Publication') === 'Publication').slice(0, 2),
-          )
-          setLatestArticles(publications.filter((item) => item.publicationType === 'Article').slice(0, 2))
-          setLatestPatents(publications.filter((item) => item.publicationType === 'Patent').slice(0, 2))
+            publications
+              .filter(
+                (item) =>
+                  (item.publicationType || "Publication") === "Publication",
+              )
+              .slice(0, 2),
+          );
+          setLatestArticles(
+            publications
+              .filter((item) => item.publicationType === "Article")
+              .slice(0, 2),
+          );
+          setLatestPatents(
+            publications
+              .filter((item) => item.publicationType === "Patent")
+              .slice(0, 2),
+          );
         }
 
-        if (galleryResult.status === 'fulfilled') {
-          const gallery = galleryResult.value
-          setGalleryCount(gallery.length)
-          setGalleryItems(gallery.slice(0, 6))
+        if (galleryResult.status === "fulfilled") {
+          const gallery = galleryResult.value;
+          setGalleryCount(gallery.length);
+          setGalleryItems(gallery.slice(0, 6));
         }
 
-        if (degreesResult.status === 'fulfilled') {
-          setDegrees(degreesResult.value)
+        if (degreesResult.status === "fulfilled") {
+          setDegrees(degreesResult.value);
         }
 
-        if (experiencesResult.status === 'fulfilled') {
-          setExperienceItems(experiencesResult.value)
+        if (experiencesResult.status === "fulfilled") {
+          setExperienceItems(experiencesResult.value);
         }
 
-        if (achievementsResult.status === 'fulfilled') {
-          setAchievements(achievementsResult.value.slice(0, 5))
+        if (achievementsResult.status === "fulfilled") {
+          setAchievements(achievementsResult.value.slice(0, 5));
         }
       } catch (error) {
-        console.warn('Home page data load failed', error)
+        console.warn("Home page data load failed", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    load()
-  }, [])
+    load();
+  }, []);
 
   return (
     <main className="portfolio-shell">
@@ -122,23 +148,25 @@ function Home() {
             <div className="hero-card-profile">
               <div className="photo-card">
                 <PlaceholderMedia
-                src={contact.profileImageUrl}
-                alt="Dr. Md Ershad profile"
-                label={contact.name || 'D'}
-                wrapperClass="photo-preview"
-                imageClass="photo-preview-img"
-              />
-                <div className="photo-input-label">Dr. Md Ershad</div>
+                  src={contact.profileImageUrl}
+                  alt="Dr. Md Ershad profile"
+                  label={contact.name || "D"}
+                  wrapperClass="photo-preview"
+                  imageClass="photo-preview-img"
+                />
+                <div className="photo-input-label">
+                  {contact.name || "Dr. Md Ershad"}
+                </div>
               </div>
 
               <div className="hero-card-heading">Profile</div>
               <div className="profile-row">
                 <span>Location</span>
-                <span>Kolkata, India</span>
+                <span>{contact.address || "Kolkata, India"}</span>
               </div>
               <div className="profile-row">
                 <span>Current Role</span>
-                <span>Assistant Professor</span>
+                <span>{contact.role || "Assistant Professor"}</span>
               </div>
               <div className="profile-row">
                 <span>Email</span>
@@ -158,19 +186,20 @@ function Home() {
 
             <div className="hero-card-main">
               <div>
-                <div className="hero-tagline">Academic portfolio</div>
-                <h1>Dr. Md Ershad</h1>
+                <div className="hero-tagline">{contact.heroTagline || 'Academic portfolio'}</div>
+                <h1>{contact.name || 'Dr. Md Ershad'}</h1>
                 <p className="hero-subtitle">
-                  Assistant Professor in Mechanical Engineering focused on additive manufacturing,
-                  bioactive materials and modern engineering education.
+                  {contact.heroSubtitle || 'Assistant Professor in Mechanical Engineering focused on additive manufacturing, bioactive materials and modern engineering education.'}
                 </p>
               </div>
 
               <div className="hero-actions hero-card-actions">
-                <DownloadButton href="/Ershad Sir CV.pdf">Download CV</DownloadButton>
+                <DownloadButton href="/Ershad Sir CV.pdf">
+                  Download CV
+                </DownloadButton>
                 <a
                   className="hero-link"
-                  href={contact.scholarUrl || '#'}
+                  href={contact.scholarUrl || "#"}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -179,7 +208,7 @@ function Home() {
               </div>
 
               <p className="hero-lead">
-                An educator and researcher with a record of building engineering capability through practical labs, collaborative research and project-based learning.
+                {contact.heroLead || 'An educator and researcher with a record of building engineering capability through practical labs, collaborative research and project-based learning.'}
               </p>
 
               <div className="hero-badges">
@@ -191,11 +220,23 @@ function Home() {
 
               <div className="hero-metrics">
                 <div className="metric-card">
-                  <strong>{loading ? <span className="skeleton-line short" /> : publicationCount ?? 0}</strong>
+                  <strong>
+                    {loading ? (
+                      <span className="skeleton-line short" />
+                    ) : (
+                      (publicationCount ?? 0)
+                    )}
+                  </strong>
                   <span>Publications</span>
                 </div>
                 <div className="metric-card">
-                  <strong>{loading ? <span className="skeleton-line short" /> : galleryCount ?? 0}</strong>
+                  <strong>
+                    {loading ? (
+                      <span className="skeleton-line short" />
+                    ) : (
+                      (galleryCount ?? 0)
+                    )}
+                  </strong>
                   <span>Gallery items</span>
                 </div>
                 <div className="metric-card">
@@ -212,19 +253,30 @@ function Home() {
         <div className="nav-card-grid">
           <Link to="/experience" className="nav-card">
             <h3>Experience</h3>
-            <p>Explore teaching responsibilities, academic roles and course leadership.</p>
+            <p>
+              Explore teaching responsibilities, academic roles and course
+              leadership.
+            </p>
           </Link>
           <Link to="/publications" className="nav-card">
             <h3>Publications</h3>
-            <p>Review peer-reviewed research, patents, and academic contributions.</p>
+            <p>
+              Review peer-reviewed research, patents, and academic
+              contributions.
+            </p>
           </Link>
           <Link to="/gallery" className="nav-card">
             <h3>Gallery</h3>
-            <p>View teaching activities, workshops, and conference highlights.</p>
+            <p>
+              View teaching activities, workshops, and conference highlights.
+            </p>
           </Link>
           <Link to="/contact" className="nav-card">
             <h3>Contact</h3>
-            <p>Reach out for speaking invitations, collaborations and consultancies.</p>
+            <p>
+              Reach out for speaking invitations, collaborations and
+              consultancies.
+            </p>
           </Link>
         </div>
       </section>
@@ -257,12 +309,17 @@ function Home() {
                 />
                 <div className="home-gallery-card-meta">
                   <div className="home-gallery-card-title">{item.title}</div>
-                  <p>{item.description || 'Visual highlight from recent events and teaching activities.'}</p>
+                  <p>
+                    {item.description ||
+                      "Visual highlight from recent events and teaching activities."}
+                  </p>
                 </div>
               </article>
             ))
           ) : (
-            <p className="home-gallery-empty">No gallery highlights are available at the moment.</p>
+            <p className="home-gallery-empty">
+              No gallery highlights are available at the moment.
+            </p>
           )}
         </div>
       </section>
@@ -271,26 +328,38 @@ function Home() {
         <article className="panel highlight-panel">
           <SectionHeading title="Academic mission" eyebrow="Overview" />
           <p>
-            I combine teaching excellence with applied research in manufacturing and material systems.
-            My teaching covers IC engines, design, manufacturing and materials science while research
-            advances bioactive glass composites and additive manufacturing applications.
+            I combine teaching excellence with applied research in manufacturing
+            and material systems. My teaching covers IC engines, design,
+            manufacturing and materials science while research advances
+            bioactive glass composites and additive manufacturing applications.
           </p>
           <div className="chip-grid">
-            {['Academic Leadership', 'Research Mentoring', 'Curriculum Design', 'Industry Collaboration'].map(
-              (chip) => (
-                <span key={chip} className="chip">
-                  {chip}
-                </span>
-              ),
-            )}
+            {[
+              "Academic Leadership",
+              "Research Mentoring",
+              "Curriculum Design",
+              "Industry Collaboration",
+            ].map((chip) => (
+              <span key={chip} className="chip">
+                {chip}
+              </span>
+            ))}
           </div>
         </article>
 
         <article className="panel metrics-panel">
-          <SectionHeading title="Performance metrics" eyebrow="Research impact" />
+          <SectionHeading
+            title="Performance metrics"
+            eyebrow="Research impact"
+          />
           <div className="stats-grid">
             {stats.map((item) => (
-              <StatBadge key={item.label} label={item.label} value={item.value} detail={item.detail} />
+              <StatBadge
+                key={item.label}
+                label={item.label}
+                value={item.value}
+                detail={item.detail}
+              />
             ))}
           </div>
         </article>
@@ -307,17 +376,21 @@ function Home() {
                 </div>
               ))
             ) : experienceItems.length > 0 ? (
-              experienceItems.slice(0, 2).map((item) => (
-                <TimelineItem
-                  key={item._id}
-                  title={item.role}
-                  organization={item.institution}
-                  duration={item.duration}
-                  description={item.description}
-                />
-              ))
+              experienceItems
+                .slice(0, 2)
+                .map((item) => (
+                  <TimelineItem
+                    key={item._id}
+                    title={item.role}
+                    organization={item.institution}
+                    duration={item.duration}
+                    description={item.description}
+                  />
+                ))
             ) : (
-              <p>Academic experience details are managed through the dashboard.</p>
+              <p>
+                Academic experience details are managed through the dashboard.
+              </p>
             )}
           </div>
         </div>
@@ -337,8 +410,12 @@ function Home() {
                   key={item._id}
                   title={item.degree}
                   organization={item.institution}
-                  duration={item.year || 'Year not specified'}
-                  description={item.description || item.score || 'Academic qualification details'}
+                  duration={item.year || "Year not specified"}
+                  description={
+                    item.description ||
+                    item.score ||
+                    "Academic qualification details"
+                  }
                 />
               ))
             ) : (
@@ -364,9 +441,13 @@ function Home() {
               {achievements.slice(0, 2).map((achievement) => (
                 <li key={achievement._id}>
                   <strong>{achievement.title}</strong>
-                  {achievement.organization ? ` — ${achievement.organization}` : ''}
-                  {achievement.year ? ` (${achievement.year})` : ''}
-                  {achievement.description ? <p>{achievement.description}</p> : null}
+                  {achievement.organization
+                    ? ` — ${achievement.organization}`
+                    : ""}
+                  {achievement.year ? ` (${achievement.year})` : ""}
+                  {achievement.description ? (
+                    <p>{achievement.description}</p>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -379,11 +460,18 @@ function Home() {
         </article>
 
         <article className="panel">
-          <SectionHeading title="Research output" eyebrow="Publications & patents" />
+          <SectionHeading
+            title="Research output"
+            eyebrow="Publications & patents"
+          />
           <div className="publication-summary">
             {loading ? (
               Array.from({ length: 3 }).map((_, index) => (
-                <SkeletonCard key={index} className="skeleton-publication-summary" lines={3} />
+                <SkeletonCard
+                  key={index}
+                  className="skeleton-publication-summary"
+                  lines={3}
+                />
               ))
             ) : (
               <>
@@ -394,8 +482,8 @@ function Home() {
                       {latestPublications.map((item) => (
                         <li key={item._id}>
                           <strong>{item.title}</strong>
-                          {item.publisher ? ` — ${item.publisher}` : ''}
-                          {item.year ? ` (${item.year})` : ''}
+                          {item.publisher ? ` — ${item.publisher}` : ""}
+                          {item.year ? ` (${item.year})` : ""}
                         </li>
                       ))}
                     </ul>
@@ -410,8 +498,8 @@ function Home() {
                       {latestArticles.map((item) => (
                         <li key={item._id}>
                           <strong>{item.title}</strong>
-                          {item.publisher ? ` — ${item.publisher}` : ''}
-                          {item.year ? ` (${item.year})` : ''}
+                          {item.publisher ? ` — ${item.publisher}` : ""}
+                          {item.year ? ` (${item.year})` : ""}
                         </li>
                       ))}
                     </ul>
@@ -426,8 +514,8 @@ function Home() {
                       {latestPatents.map((item) => (
                         <li key={item._id}>
                           <strong>{item.title}</strong>
-                          {item.publisher ? ` — ${item.publisher}` : ''}
-                          {item.year ? ` (${item.year})` : ''}
+                          {item.publisher ? ` — ${item.publisher}` : ""}
+                          {item.year ? ` (${item.year})` : ""}
                         </li>
                       ))}
                     </ul>
@@ -449,8 +537,9 @@ function Home() {
           <div className="contact-home-copy panel">
             <SectionHeading title="Let’s connect" eyebrow="Contact" />
             <p>
-              For research collaboration, guest lectures, supervision, and applied engineering consultancy,
-              this is the fastest route to reach Dr. Md Ershad.
+              For research collaboration, guest lectures, supervision, and
+              applied engineering consultancy, this is the fastest route to
+              reach Dr. Md Ershad.
             </p>
             <div className="contact-home-features">
               <div className="feature-pill">Research collaboration</div>
@@ -465,7 +554,10 @@ function Home() {
           {loading ? (
             <div className="contact-home-cards skeleton-contact-grid">
               {Array.from({ length: 3 }).map((_, index) => (
-                <article key={index} className="contact-card contact-card-large skeleton-card">
+                <article
+                  key={index}
+                  className="contact-card contact-card-large skeleton-card"
+                >
                   <SkeletonBlock rows={2} />
                 </article>
               ))}
@@ -474,16 +566,25 @@ function Home() {
             <div className="contact-home-cards">
               <article className="contact-card contact-card-large">
                 <div className="contact-card-title">
-                  <span className="contact-card-icon contact-card-icon-email" aria-hidden="true" />
+                  <span
+                    className="contact-card-icon contact-card-icon-email"
+                    aria-hidden="true"
+                  />
                   Email
                 </div>
-                <a href={`mailto:${contact.email}`} className="contact-card-link">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="contact-card-link"
+                >
                   {contact.email}
                 </a>
               </article>
               <article className="contact-card contact-card-large">
                 <div className="contact-card-title">
-                  <span className="contact-card-icon contact-card-icon-phone" aria-hidden="true" />
+                  <span
+                    className="contact-card-icon contact-card-icon-phone"
+                    aria-hidden="true"
+                  />
                   Phone
                 </div>
                 <a href={`tel:${contact.phone}`} className="contact-card-link">
@@ -492,10 +593,18 @@ function Home() {
               </article>
               <article className="contact-card contact-card-large">
                 <div className="contact-card-title">
-                  <span className="contact-card-icon contact-card-icon-scholar" aria-hidden="true" />
+                  <span
+                    className="contact-card-icon contact-card-icon-scholar"
+                    aria-hidden="true"
+                  />
                   Scholar Profile
                 </div>
-                <a href={contact.scholarUrl || '#'} target="_blank" rel="noreferrer" className="contact-card-link">
+                <a
+                  href={contact.scholarUrl || "#"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="contact-card-link"
+                >
                   View scholar profile
                 </a>
               </article>
@@ -504,7 +613,7 @@ function Home() {
         </div>
       </section>
     </main>
-  )
+  );
 }
 
-export default Home
+export default Home;

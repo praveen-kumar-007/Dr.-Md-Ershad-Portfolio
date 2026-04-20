@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react'
-import SectionHeading from '../components/SectionHeading'
-import TimelineItem from '../components/TimelineItem'
-import PlaceholderMedia from '../components/PlaceholderMedia'
-import { SkeletonBlock } from '../components/SkeletonBlock'
-import '../styles/components.css'
-import { getDegrees, getExperiences } from '../services/api'
+import { useEffect, useState } from "react";
+import SectionHeading from "../components/SectionHeading";
+import TimelineItem from "../components/TimelineItem";
+import PlaceholderMedia from "../components/PlaceholderMedia";
+import { SkeletonBlock } from "../components/SkeletonBlock";
+import "../styles/components.css";
+import { getDegrees, getExperiences } from "../services/api";
 
 const courses = [
-  'Theory of Machines',
-  'Engineering Graphics & Design',
-  'Operation Research',
-  'Materials Science & Technology',
-  'Internal Combustion Engines',
-]
+  "Theory of Machines",
+  "Engineering Graphics & Design",
+  "Operation Research",
+  "Materials Science & Technology",
+  "Internal Combustion Engines",
+];
 
 const highlights = [
-  'Delivered practical lab sessions to bridge theory and hands-on engineering design.',
-  'Guided student research in additive manufacturing and sustainable materials.',
-  'Developed curriculum frameworks for IC engines and materials technology.',
-  'Collaborated with industry-focused projects and student innovation competitions.',
-]
+  "Delivered practical lab sessions to bridge theory and hands-on engineering design.",
+  "Guided student research in additive manufacturing and sustainable materials.",
+  "Developed curriculum frameworks for IC engines and materials technology.",
+  "Collaborated with industry-focused projects and student innovation competitions.",
+];
 
 function Experience() {
-  const [experienceItems, setExperienceItems] = useState([])
-  const [degrees, setDegrees] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [experienceItems, setExperienceItems] = useState([]);
+  const [degrees, setDegrees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadExperience = async () => {
@@ -32,28 +32,31 @@ function Experience() {
         const [experienceResult, degreesResult] = await Promise.allSettled([
           getExperiences(),
           getDegrees(),
-        ])
+        ]);
 
-        if (experienceResult.status === 'fulfilled') {
-          setExperienceItems(experienceResult.value)
+        if (experienceResult.status === "fulfilled") {
+          setExperienceItems(experienceResult.value);
         }
 
-        if (degreesResult.status === 'fulfilled') {
-          setDegrees(degreesResult.value)
+        if (degreesResult.status === "fulfilled") {
+          setDegrees(degreesResult.value);
         }
       } catch (error) {
-        console.error('Failed to load experience data', error)
+        console.error("Failed to load experience data", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    loadExperience()
-  }, [])
+    loadExperience();
+  }, []);
 
   return (
     <main className="page-content">
-      <SectionHeading title="Experience & Education" eyebrow="Academic profile" />
+      <SectionHeading
+        title="Experience & Education"
+        eyebrow="Academic profile"
+      />
 
       <section className="split-grid">
         <div className="panel">
@@ -61,7 +64,11 @@ function Experience() {
           {loading ? (
             <div className="experience-grid">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="skeleton-card" style={{ minHeight: '260px' }}>
+                <div
+                  key={index}
+                  className="skeleton-card"
+                  style={{ minHeight: "260px" }}
+                >
                   <SkeletonBlock rows={4} />
                 </div>
               ))}
@@ -81,7 +88,9 @@ function Experience() {
                   />
                   <div className="experience-content">
                     <h3>{item.title}</h3>
-                    <p className="publication-meta">{item.institution} · {item.duration}</p>
+                    <p className="publication-meta">
+                      {item.institution} · {item.duration}
+                    </p>
                     <p className="tag-pill">{item.category}</p>
                     {item.location ? <p>{item.location}</p> : null}
                     {item.description ? <p>{item.description}</p> : null}
@@ -107,8 +116,12 @@ function Experience() {
                   key={item._id}
                   title={item.degree}
                   organization={item.institution}
-                  duration={item.year || 'Year not specified'}
-                  description={item.description || item.score || 'Academic qualification details'}
+                  duration={item.year || "Year not specified"}
+                  description={
+                    item.description ||
+                    item.score ||
+                    "Academic qualification details"
+                  }
                 />
               ))
             ) : (
@@ -123,13 +136,18 @@ function Experience() {
           <SectionHeading title="Core Courses" eyebrow="Key subjects" />
           <div className="course-list">
             {courses.map((course) => (
-              <span key={course} className="course-pill">{course}</span>
+              <span key={course} className="course-pill">
+                {course}
+              </span>
             ))}
           </div>
         </div>
 
         <div className="panel">
-          <SectionHeading title="Teaching highlights" eyebrow="Academic impact" />
+          <SectionHeading
+            title="Teaching highlights"
+            eyebrow="Academic impact"
+          />
           <ul className="bullet-list">
             {highlights.map((item) => (
               <li key={item}>{item}</li>
@@ -138,7 +156,7 @@ function Experience() {
         </div>
       </section>
     </main>
-  )
+  );
 }
 
-export default Experience
+export default Experience;

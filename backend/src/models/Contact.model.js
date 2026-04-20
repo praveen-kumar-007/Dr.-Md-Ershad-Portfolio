@@ -1,7 +1,12 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const ContactSchema = new mongoose.Schema(
   {
+    name: { type: String, required: false },
+    role: { type: String, required: false },
+    heroTagline: { type: String, required: false },
+    heroSubtitle: { type: String, required: false },
+    heroLead: { type: String, required: false },
     email: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: false },
@@ -18,7 +23,7 @@ const ContactSchema = new mongoose.Schema(
     researchFocus: { type: String, required: false },
     researchFocusDetail: { type: String, required: false },
   },
-  { timestamps: true }
-)
+  { timestamps: true },
+);
 
-export default mongoose.model('Contact', ContactSchema)
+export default mongoose.model("Contact", ContactSchema);

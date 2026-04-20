@@ -22,12 +22,16 @@ import "./styles/pages.css";
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
+  const [contactName, setContactName] = useState("Dr. Md Ershad");
+  const [contactRole, setContactRole] = useState("Assistant Professor");
 
   useEffect(() => {
     const loadContact = async () => {
       try {
         const data = await getContact();
         setLogoUrl(data.profileImageUrl || "");
+        setContactName(data.name || "Dr. Md Ershad");
+        setContactRole(data.role || "Assistant Professor");
       } catch (error) {
         console.warn("Unable to load contact image for navbar", error);
       }
@@ -45,15 +49,11 @@ function App() {
           <div className="portfolio-brand">
             <div className="brand">
               {logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt="Dr. Md Ershad"
-                  className="brand-image"
-                />
+                <img src={logoUrl} alt={contactName} className="brand-image" />
               ) : (
                 <span className="brand-mark">DE</span>
               )}
-              <span className="brand-text">Dr. Md Ershad</span>
+              <span className="brand-text">{contactName}</span>
             </div>
             <button
               type="button"
@@ -81,8 +81,8 @@ function App() {
                 </div>
               )}
               <div>
-                <div className="nav-profile-name">Dr. Md Ershad</div>
-                <div className="nav-profile-role">Assistant Professor</div>
+                <div className="nav-profile-name">{contactName}</div>
+                <div className="nav-profile-role">{contactRole}</div>
               </div>
             </div>
 
@@ -168,8 +168,8 @@ function App() {
                 </div>
               )}
               <div className="mobile-nav-title">
-                <div className="nav-profile-name">Dr. Md Ershad</div>
-                <div className="nav-profile-role">Assistant Professor</div>
+                <div className="nav-profile-name">{contactName}</div>
+                <div className="nav-profile-role">{contactRole}</div>
               </div>
             </div>
             <button

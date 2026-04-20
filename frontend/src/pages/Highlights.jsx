@@ -1,33 +1,36 @@
-import { useEffect, useState } from 'react'
-import SectionHeading from '../components/SectionHeading'
-import { SkeletonCard } from '../components/SkeletonBlock'
-import '../styles/components.css'
-import { getHighlights } from '../services/api'
+import { useEffect, useState } from "react";
+import SectionHeading from "../components/SectionHeading";
+import { SkeletonCard } from "../components/SkeletonBlock";
+import "../styles/components.css";
+import { getHighlights } from "../services/api";
 
 function Highlights() {
-  const [highlights, setHighlights] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [highlights, setHighlights] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadHighlights = async () => {
       try {
-        const data = await getHighlights()
-        setHighlights(data)
+        const data = await getHighlights();
+        setHighlights(data);
       } catch (error) {
-        console.error('Failed to load highlights', error)
+        console.error("Failed to load highlights", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    loadHighlights()
-  }, [])
+    loadHighlights();
+  }, []);
 
   return (
     <main className="page-content">
       <SectionHeading title="Research Highlights" eyebrow="Selected work" />
       <section className="panel highlight-panel">
-        <p>Featured research themes, innovation projects and leadership examples are curated through the admin panel.</p>
+        <p>
+          Featured research themes, innovation projects and leadership examples
+          are curated through the admin panel.
+        </p>
       </section>
       {loading ? (
         <section className="panel">
@@ -45,7 +48,12 @@ function Highlights() {
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
                 {item.link ? (
-                  <a href={item.link} target="_blank" rel="noreferrer" className="button-primary">
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button-primary"
+                  >
                     Learn more
                   </a>
                 ) : null}
@@ -57,7 +65,7 @@ function Highlights() {
         </div>
       )}
     </main>
-  )
+  );
 }
 
-export default Highlights
+export default Highlights;

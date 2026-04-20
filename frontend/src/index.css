@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #f8fbff;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-soft: rgba(255, 255, 255, 0.78);
+  --surface-strong: #ffffff;
+  --text: #111827;
+  --text-h: #0f172a;
+  --muted: #5b728b;
+  --border: rgba(66, 133, 244, 0.18);
+  --shadow: 0 32px 90px rgba(66, 133, 244, 0.12);
+  --google-blue: #516fa9;
+  --google-red: #ea4335;
+  --google-yellow: #fbbc05;
+  --google-green: #7e8ca0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at top left, rgba(66, 133, 244, 0.18), transparent 26%),
+    radial-gradient(circle at top right, rgba(234, 67, 53, 0.14), transparent 22%),
+    radial-gradient(circle at bottom left, rgba(251, 188, 5, 0.12), transparent 18%),
+    var(--bg);
+  color: var(--text);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+a {
+  font: inherit;
+}

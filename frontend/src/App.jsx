@@ -1,42 +1,42 @@
-import { useEffect, useState } from 'react'
-import { BrowserRouter, NavLink, Routes, Route } from 'react-router-dom'
-import { getContact } from './services/api'
-import Home from './pages/Home'
-import Experience from './pages/Experience'
-import Publications from './pages/Publications'
-import Highlights from './pages/Highlights'
-import Gallery from './pages/Gallery'
-import Contact from './pages/Contact'
-import Achievements from './pages/Achievements'
-import AdminLayout from './admin/AdminLayout'
-import Admin from './admin/Admin'
-import PublicationsAdmin from './admin/PublicationsAdmin'
-import GalleryAdmin from './admin/GalleryAdmin'
-import ContactAdmin from './admin/ContactAdmin'
-import ExperienceAdmin from './admin/ExperienceAdmin'
-import DegreeAdmin from './admin/DegreeAdmin'
-import AchievementsAdmin from './admin/AchievementsAdmin'
-import HighlightsAdmin from './admin/HighlightsAdmin'
-import './styles/pages.css'
+import { useEffect, useState } from "react";
+import { BrowserRouter, NavLink, Routes, Route } from "react-router-dom";
+import { getContact } from "./services/api";
+import Home from "./pages/Home";
+import Experience from "./pages/Experience";
+import Publications from "./pages/Publications";
+import Highlights from "./pages/Highlights";
+import Gallery from "./pages/Gallery";
+import Contact from "./pages/Contact";
+import Achievements from "./pages/Achievements";
+import AdminLayout from "./admin/AdminLayout";
+import Admin from "./admin/Admin";
+import PublicationsAdmin from "./admin/PublicationsAdmin";
+import GalleryAdmin from "./admin/GalleryAdmin";
+import ContactAdmin from "./admin/ContactAdmin";
+import ExperienceAdmin from "./admin/ExperienceAdmin";
+import DegreeAdmin from "./admin/DegreeAdmin";
+import AchievementsAdmin from "./admin/AchievementsAdmin";
+import HighlightsAdmin from "./admin/HighlightsAdmin";
+import "./styles/pages.css";
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [logoUrl, setLogoUrl] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("");
 
   useEffect(() => {
     const loadContact = async () => {
       try {
-        const data = await getContact()
-        setLogoUrl(data.profileImageUrl || '')
+        const data = await getContact();
+        setLogoUrl(data.profileImageUrl || "");
       } catch (error) {
-        console.warn('Unable to load contact image for navbar', error)
+        console.warn("Unable to load contact image for navbar", error);
       }
-    }
+    };
 
-    loadContact()
-  }, [])
+    loadContact();
+  }, []);
 
-  const handleLinkClick = () => setMenuOpen(false)
+  const handleLinkClick = () => setMenuOpen(false);
 
   return (
     <BrowserRouter>
@@ -45,7 +45,11 @@ function App() {
           <div className="portfolio-brand">
             <div className="brand">
               {logoUrl ? (
-                <img src={logoUrl} alt="Dr. Md Ershad" className="brand-image" />
+                <img
+                  src={logoUrl}
+                  alt="Dr. Md Ershad"
+                  className="brand-image"
+                />
               ) : (
                 <span className="brand-mark">DE</span>
               )}
@@ -53,7 +57,7 @@ function App() {
             </div>
             <button
               type="button"
-              className={`nav-toggle ${menuOpen ? 'open' : ''}`}
+              className={`nav-toggle ${menuOpen ? "open" : ""}`}
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-label="Toggle navigation"
             >
@@ -66,9 +70,15 @@ function App() {
           <nav className="nav-links">
             <div className="nav-profile-panel">
               {logoUrl ? (
-                <img src={logoUrl} alt="Dr. Md Ershad" className="nav-profile-avatar" />
+                <img
+                  src={logoUrl}
+                  alt="Dr. Md Ershad"
+                  className="nav-profile-avatar"
+                />
               ) : (
-                <div className="nav-profile-avatar nav-profile-fallback">DE</div>
+                <div className="nav-profile-avatar nav-profile-fallback">
+                  DE
+                </div>
               )}
               <div>
                 <div className="nav-profile-name">Dr. Md Ershad</div>
@@ -80,7 +90,7 @@ function App() {
               to="/"
               end
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -89,7 +99,7 @@ function App() {
             <NavLink
               to="/experience"
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -98,7 +108,7 @@ function App() {
             <NavLink
               to="/publications"
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -107,7 +117,7 @@ function App() {
             <NavLink
               to="/gallery"
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -116,7 +126,7 @@ function App() {
             <NavLink
               to="/achievements"
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -125,7 +135,7 @@ function App() {
             <NavLink
               to="/highlights"
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -134,7 +144,7 @@ function App() {
             <NavLink
               to="/contact"
               className={({ isActive }) =>
-                isActive ? 'nav-link active' : 'nav-link'
+                isActive ? "nav-link active" : "nav-link"
               }
               onClick={handleLinkClick}
             >
@@ -143,13 +153,19 @@ function App() {
           </nav>
         </header>
 
-        <div className={`mobile-nav ${menuOpen ? 'open' : ''}`}>
+        <div className={`mobile-nav ${menuOpen ? "open" : ""}`}>
           <div className="mobile-nav-top">
             <div className="mobile-nav-brand">
               {logoUrl ? (
-                <img src={logoUrl} alt="Dr. Md Ershad" className="nav-profile-avatar" />
+                <img
+                  src={logoUrl}
+                  alt="Dr. Md Ershad"
+                  className="nav-profile-avatar"
+                />
               ) : (
-                <div className="nav-profile-avatar nav-profile-fallback">DE</div>
+                <div className="nav-profile-avatar nav-profile-fallback">
+                  DE
+                </div>
               )}
               <div className="mobile-nav-title">
                 <div className="nav-profile-name">Dr. Md Ershad</div>
@@ -172,8 +188,8 @@ function App() {
               end
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-home active'
-                  : 'mobile-nav-link mobile-nav-home'
+                  ? "mobile-nav-link mobile-nav-home active"
+                  : "mobile-nav-link mobile-nav-home"
               }
               onClick={handleLinkClick}
             >
@@ -183,8 +199,8 @@ function App() {
               to="/experience"
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-experience active'
-                  : 'mobile-nav-link mobile-nav-experience'
+                  ? "mobile-nav-link mobile-nav-experience active"
+                  : "mobile-nav-link mobile-nav-experience"
               }
               onClick={handleLinkClick}
             >
@@ -194,8 +210,8 @@ function App() {
               to="/publications"
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-publications active'
-                  : 'mobile-nav-link mobile-nav-publications'
+                  ? "mobile-nav-link mobile-nav-publications active"
+                  : "mobile-nav-link mobile-nav-publications"
               }
               onClick={handleLinkClick}
             >
@@ -205,8 +221,8 @@ function App() {
               to="/gallery"
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-gallery active'
-                  : 'mobile-nav-link mobile-nav-gallery'
+                  ? "mobile-nav-link mobile-nav-gallery active"
+                  : "mobile-nav-link mobile-nav-gallery"
               }
               onClick={handleLinkClick}
             >
@@ -216,8 +232,8 @@ function App() {
               to="/achievements"
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-achievements active'
-                  : 'mobile-nav-link mobile-nav-achievements'
+                  ? "mobile-nav-link mobile-nav-achievements active"
+                  : "mobile-nav-link mobile-nav-achievements"
               }
               onClick={handleLinkClick}
             >
@@ -227,8 +243,8 @@ function App() {
               to="/highlights"
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-highlights active'
-                  : 'mobile-nav-link mobile-nav-highlights'
+                  ? "mobile-nav-link mobile-nav-highlights active"
+                  : "mobile-nav-link mobile-nav-highlights"
               }
               onClick={handleLinkClick}
             >
@@ -238,8 +254,8 @@ function App() {
               to="/contact"
               className={({ isActive }) =>
                 isActive
-                  ? 'mobile-nav-link mobile-nav-contact active'
-                  : 'mobile-nav-link mobile-nav-contact'
+                  ? "mobile-nav-link mobile-nav-contact active"
+                  : "mobile-nav-link mobile-nav-contact"
               }
               onClick={handleLinkClick}
             >
@@ -261,7 +277,10 @@ function App() {
           </div>
         </div>
 
-        <div className={`nav-backdrop ${menuOpen ? 'open' : ''}`} onClick={handleLinkClick} />
+        <div
+          className={`nav-backdrop ${menuOpen ? "open" : ""}`}
+          onClick={handleLinkClick}
+        />
 
         <Routes>
           <Route path="/" element={<Home />} />
